@@ -28,8 +28,43 @@ read.xlsx(
   fillMergedCells = FALSE
 )
 
+## write to working directory
+library(openxlsx)
+write.xlsx(iris, file = "writeXLSX1.xlsx")
+write.xlsx(iris, file = "writeXLSXTable1.xlsx", asTable = TRUE)
+
+
+
+## write a list of data.frames to individual worksheets using list names as
+## worksheet names
+l <- list(IRIS = iris, MTCARS = mtcars)
+write.xlsx(l, file = "writeXLSX2.xlsx")
+write.xlsx(l, file = "writeXLSXTable2.xlsx", asTable = TRUE)
+
+# write.xlsx also accepts styling parameters
+
+options(openxlsx.borderColour = "#4F80BD")
+options(openxlsx.borderStyle = "thin")
+options(openxlsx.dateFormat = "mm/dd/yyyy")
+options(openxlsx.datetimeFormat = "yyyy-mm-dd hh:mm:ss")
+options(openxlsx.numFmt = NULL)  ## For default style rounding of numeric columns
+
+df <- data.frame(Date = Sys.Date() - 0:19, LogicalT = TRUE, Time = Sys.time() - 0:19 *
+    60 * 60, Cash = paste("$", 1:20), Cash2 = 31:50, hLink = "https://CRAN.R-project.org/",
+    Percentage = seq(0, 1, length.out = 20), TinyNumbers = runif(20)/1e+09, stringsAsFactors = FALSE)
+
+class(df$Cash) <- "currency"
+class(df$Cash2) <- "accounting"
+class(df$hLink) <- "hyperlink"
+class(df$Percentage) <- "percentage"
+class(df$TinyNumbers) <- "scientific"
+
+write.xlsx(df, "writeXLSX3.xlsx")
+write.xlsx(df, file = "writeXLSXTable3.xlsx", asTable = TRUE)
+
+
 # sample call
-sample_data <- readWorkbook("sample.xlsx", sheet=1)
+sample_data <- readWorkbook("writeXLSX2.xlsx", sheet=1)
 ```
 
 ### CSV (comma-separated value) files
